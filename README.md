@@ -1,2 +1,7 @@
-# SummerProject2 
-Kalle Kytola
+# SummerProject2
+
+Plan:
+ * Define Hilbert-Schmidt operators.
+ * Prove basic results about them.
+ 
+ 
