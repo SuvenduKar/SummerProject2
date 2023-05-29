@@ -18,9 +18,13 @@ variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 
 #check LinearMap
 
-noncomputable def OrthonormalBasis.trace [Fintype I] (e : OrthonormalBasis I ℂ V) (T : V →ₗ[ℂ] V) : ℂ :=
-  ∑' i, ⟪T (e i), e i⟫_ℂ 
+/-- The trace of a linear map with respect to a given `OrthonormalBasis`.
 
+Comment by Kalle:
+ * The inner product in Mathlib is in fact linear with respect to the second argument, so I changed
+   the definition accordingly. -/
+noncomputable def OrthonormalBasis.trace [Fintype I] (e : OrthonormalBasis I ℂ V) (T : V →ₗ[ℂ] V) : ℂ :=
+  ∑' i, ⟪e i, T (e i)⟫_ℂ 
 
 lemma OrthonormalBasis.trace_eq_trace [Fintype I] [Fintype J] 
   (e : OrthonormalBasis I ℂ V) (f : OrthonormalBasis J ℂ V) (T : V →ₗ[ℂ] V) : 
