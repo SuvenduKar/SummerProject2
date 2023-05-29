@@ -37,6 +37,16 @@ lemma OrthonormalBasis.trace_smul [Fintype I]
     e.trace (α • T) = α * e.trace T := by
   sorry
 
+variable [Fintype I] [DecidableEq I] (e : OrthonormalBasis I ℂ V) (i : I) 
+
+#check e.repr_self i 
+
+#check EuclideanSpace.single
+
+#check OrthonormalBasis.sum_repr 
+
+#check tsum_eq_sum 
+
 
 
 
