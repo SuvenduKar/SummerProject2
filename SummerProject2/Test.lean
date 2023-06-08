@@ -44,13 +44,13 @@ lemma TraceClass.summable (T : V →ₗ[ℂ] V) [TraceClass T] (e : HilbertBasis
     Summable (fun i ↦ ⟪e i, T (e i)⟫_ℂ) := by
   sorry
 
-lemma TraceClass.trace_eq_trace (T : V →ₗ[ℂ] V) [TraceClass T]
-  (e : HilbertBasis I ℂ V) (f : HilbertBasis J ℂ V) : 
+lemma TraceClass.trace_eq_trace (T : V →ₗ[ℂ] V) 
+  {e : HilbertBasis I ℂ V} (H : Summable (fun i ↦ ⟪e i, T (e i)⟫_ℂ)) (f : HilbertBasis J ℂ V): 
     e.trace T = f.trace T := by
   sorry
 
 lemma HilbertBasis.trace_add (e : HilbertBasis I ℂ V) (T₁ T₂ : V →ₗ[ℂ] V)
-  [TraceClass T₁] [TraceClass T₂] : 
+  (H₁ : Summable (fun i ↦ ⟪e i, T₁ (e i)⟫_ℂ)) (H₂ : Summable (fun i ↦ ⟪e i, T₂ (e i)⟫_ℂ)) : 
     e.trace (T₁ + T₂) = e.trace T₁ + e.trace T₂ := by
   -- Math proof?
   --   tr(T₁ + T₂)
@@ -63,9 +63,9 @@ lemma HilbertBasis.trace_add (e : HilbertBasis I ℂ V) (T₁ T₂ : V →ₗ[�
   simp only [LinearMap.add_apply]
   simp only [inner_add_right]
   rw [tsum_add]
-  ·exact TraceClass.summable T₁ e
+  · exact H₁
   --exact TraceClass.summable T₂ e
-  .exact TraceClass.summable T₂ e 
+  . exact H₂
 
 lemma OrthonormalBasis.trace_add [Fintype I]  
   (e : OrthonormalBasis I ℂ V) (T₁ T₂ : V →ₗ[ℂ] V) : 
@@ -90,13 +90,12 @@ lemma OrthonormalBasis.trace_add [Fintype I]
     exact observe_second.summable
 
 --trace(α • T)=α * T , for a traceclass operator T.
-lemma HilbertBasis.trace_smul (e : HilbertBasis I ℂ V) (α : ℂ) (T : V →ₗ[ℂ] V)
-  [TraceClass T] :
-   e.trace (α • T) = α * e.trace T := by
-   simp only  [trace]
-   simp only [LinearMap.smul_apply]
-   simp only [inner_smul_right]
-   rw [tsum_mul_left]
+lemma HilbertBasis.trace_smul (e : HilbertBasis I ℂ V) (α : ℂ) (T : V →ₗ[ℂ] V) : 
+    e.trace (α • T) = α * e.trace T := by
+  simp only  [trace]
+  simp only [LinearMap.smul_apply]
+  simp only [inner_smul_right]
+  rw [tsum_mul_left]
    
    --set_option maxHeartbeats 0
     
