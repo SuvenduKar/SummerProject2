@@ -25,7 +25,13 @@ noncomputable def HilbertBasis.trace (e : HilbertBasis I ℂ V) (T : V →ₗ[�
 lemma OrthonormalBasis.trace_eq_trace [Fintype I] [Fintype J] 
   (e : OrthonormalBasis I ℂ V) (f : OrthonormalBasis J ℂ V) (T : V →ₗ[ℂ] V) : 
     e.trace T = f.trace T := by
-  sorry
+    simp only [trace]
+    repeat rw [e.repr J]
+    sorry
+
+
+
+  
 
 /-- Trace class operators are those linear maps for which the series defining the trace
 w.r.t. some Hilbert basis is summable. -/
@@ -57,10 +63,9 @@ lemma HilbertBasis.trace_add (e : HilbertBasis I ℂ V) (T₁ T₂ : V →ₗ[�
   simp only [LinearMap.add_apply]
   simp only [inner_add_right]
   rw [tsum_add]
-  ·
-    exact TraceClass.summable T₁ e
+  ·exact TraceClass.summable T₁ e
   --exact TraceClass.summable T₂ e
-  . exact TraceClass.summable T₂ e 
+  .exact TraceClass.summable T₂ e 
 
 lemma OrthonormalBasis.trace_add [Fintype I]  
   (e : OrthonormalBasis I ℂ V) (T₁ T₂ : V →ₗ[ℂ] V) : 
@@ -84,9 +89,6 @@ lemma OrthonormalBasis.trace_add [Fintype I]
   · have observe_second := @hasSum_fintype ℂ I _ _ _ (fun i ↦ ⟪e i, T₂ (e i)⟫_ℂ)
     exact observe_second.summable
 
-
-  
- 
 --trace(α • T)=α * T , for a traceclass operator T.
 lemma HilbertBasis.trace_smul (e : HilbertBasis I ℂ V) (α : ℂ) (T : V →ₗ[ℂ] V)
   [TraceClass T] :
@@ -99,21 +101,14 @@ lemma HilbertBasis.trace_smul (e : HilbertBasis I ℂ V) (α : ℂ) (T : V →�
    --set_option maxHeartbeats 0
     
     --simp only [inner_smul_right]
-
-
-
-
-
-   
-   
-   
-  
-  
-
 lemma OrthonormalBasis.trace_smul [Fintype I] 
   (e : OrthonormalBasis I ℂ V) (α : ℂ) (T : V →ₗ[ℂ] V) : 
     e.trace (α • T) = α * e.trace T := by
-  sorry
+  simp only [trace]
+  simp only [LinearMap.smul_apply]
+  simp only [inner_smul_right]
+  rw [tsum_mul_left]
+
 
 variable [Fintype I] [DecidableEq I] (e : OrthonormalBasis I ℂ V) (i : I) 
 
