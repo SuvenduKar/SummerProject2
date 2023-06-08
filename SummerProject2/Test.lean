@@ -96,8 +96,3 @@ variable [Fintype I] [DecidableEq I] (e : OrthonormalBasis I ℂ V) (i : I)
 #check OrthonormalBasis.sum_repr 
 
 #check tsum_eq_sum 
-
-
-
-
-
