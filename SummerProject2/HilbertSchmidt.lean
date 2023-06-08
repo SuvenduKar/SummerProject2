@@ -24,8 +24,8 @@ class HilbertSchmidt (T : V →ₗ[ℂ] W) where
 lemma HilbertBasis.HilbertSchmidtSummable_add (e : HilbertBasis I ℂ V) (T₁ T₂ : V →ₗ[ℂ] W)
   (h₁ : e.HilbertSchmidtSummable T₁) (h₂ : e.HilbertSchmidtSummable T₂) :
     e.HilbertSchmidtSummable (T₁ + T₂) := by
+  have := inner_mul_inner_self_le -- This is Cauchy-Schwarz inequality.
   sorry
-
 
 lemma HilbertBasis.HilbertSchmidtSummable_smul (e : HilbertBasis I ℂ V) (c : ℂ) (T : V →ₗ[ℂ] W)
   (h : e.HilbertSchmidtSummable T) :
