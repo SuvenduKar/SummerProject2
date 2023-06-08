@@ -13,9 +13,13 @@ variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSp
 variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [CompleteSpace W]
 
 
-/-- The property that `∑ i j, ⟪T (e i), T (e j)⟫` is summable for a given Hilbert basis `e`. -/
+/-- The property that `∑ i, ⟪T (e i), T (e i)⟫` is summable for a given Hilbert basis `e`. -/
 def HilbertBasis.HilbertSchmidtSummable (e : HilbertBasis I ℂ V) (T : V →ₗ[ℂ] W) :=
   Summable (fun i ↦ ⟪T (e i), T (e i)⟫_ℂ)
+
+/-- The sum `∑ i, ⟪T (e i), T (e i)⟫`, i.e., the HS norm squared. -/
+noncomputable def HilbertBasis.HilbertSchmidtNormSq (e : HilbertBasis I ℂ V) (T : V →ₗ[ℂ] W) :=
+  ∑' i, ⟪T (e i), T (e i)⟫_ℂ
 
 /-- Hilbert-Schmidt operators. -/
 class HilbertSchmidt (T : V →ₗ[ℂ] W) where
@@ -24,12 +28,17 @@ class HilbertSchmidt (T : V →ₗ[ℂ] W) where
 lemma HilbertBasis.HilbertSchmidtSummable_add (e : HilbertBasis I ℂ V) (T₁ T₂ : V →ₗ[ℂ] W)
   (h₁ : e.HilbertSchmidtSummable T₁) (h₂ : e.HilbertSchmidtSummable T₂) :
     e.HilbertSchmidtSummable (T₁ + T₂) := by
-  have := inner_mul_inner_self_le -- This is Cauchy-Schwarz inequality.
+  --have := @inner_mul_inner_self_le -- This is Cauchy-Schwarz inequality.
   sorry
 
 lemma HilbertBasis.HilbertSchmidtSummable_smul (e : HilbertBasis I ℂ V) (c : ℂ) (T : V →ₗ[ℂ] W)
   (h : e.HilbertSchmidtSummable T) :
     e.HilbertSchmidtSummable (c • T) := by
+  sorry
+
+lemma HilbertBasis.HilbertSchmidtSummable' (e : HilbertBasis I ℂ V) (T : V →ₗ[ℂ] W)
+  (h : e.HilbertSchmidtSummable T) (f : HilbertBasis I ℂ V) :
+    f.HilbertSchmidtSummable T := by
   sorry
 
 
