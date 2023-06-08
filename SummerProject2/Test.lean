@@ -82,6 +82,14 @@ lemma OrthonormalBasis.trace_add [Fintype I]
     exact observe_first.summable
   · sorry
 
+--trace(α • T)=α * T , for a traceclass operator T.
+lemma HilbertBasis.trace_smul (e : HilbertBasis I ℂ V) (α : ℂ) (T : V →ₗ[ℂ] V)
+  [TraceClass T] :
+   e.trace(α • T) = α * e.trace T :=by
+  sorry
+  
+  
+
 lemma OrthonormalBasis.trace_smul [Fintype I] 
   (e : OrthonormalBasis I ℂ V) (α : ℂ) (T : V →ₗ[ℂ] V) : 
     e.trace (α • T) = α * e.trace T := by
