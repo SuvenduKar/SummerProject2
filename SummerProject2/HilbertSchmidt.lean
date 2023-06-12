@@ -34,6 +34,16 @@ lemma HilbertBasis.HilbertSchmidtSummable_add (e : HilbertBasis I ℂ V) (T₁ T
 lemma HilbertBasis.HilbertSchmidtSummable_smul (e : HilbertBasis I ℂ V) (c : ℂ) (T : V →ₗ[ℂ] W)
   (h : e.HilbertSchmidtSummable T) :
     e.HilbertSchmidtSummable (c • T) := by
+    simp only [HilbertSchmidtSummable]
+    simp only [LinearMap.smul_apply]
+    simp only [LinearMap.smul_apply] 
+    simp only [inner_smul_left]
+    simp only [inner_smul_right]
+    --simp only [HilbertBasis.repr_symm_single]
+    --simp only [lp.summable_inner]
+    simp [ OrthogonalFamily.summable_of_lp]
+    --simp [HilbertBasis.repr_self]
+    -- HilbertBasis.summable_inner_mul_inner
   sorry
 
 lemma HilbertBasis.HilbertSchmidtSummable' (e : HilbertBasis I ℂ V) (T : V →ₗ[ℂ] W)
