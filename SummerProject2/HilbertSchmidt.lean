@@ -28,12 +28,20 @@ class HilbertSchmidt (T : V →ₗ[ℂ] W) where
 lemma HilbertBasis.HilbertSchmidtSummable_add (e : HilbertBasis I ℂ V) (T₁ T₂ : V →ₗ[ℂ] W)
   (h₁ : e.HilbertSchmidtSummable T₁) (h₂ : e.HilbertSchmidtSummable T₂) :
     e.HilbertSchmidtSummable (T₁ + T₂) := by
-  --have := @inner_mul_inner_self_le -- This is Cauchy-Schwarz inequality.
+    --simp only [HilbertSchmidtSummable]
+    --unfold HilbertSchmidtSummable at *
+  
+
+    --have := @inner_mul_inner_self_le -- This is Cauchy-Schwarz inequality.
   sorry
 
 lemma HilbertBasis.HilbertSchmidtSummable_smul (e : HilbertBasis I ℂ V) (c : ℂ) (T : V →ₗ[ℂ] W)
   (h : e.HilbertSchmidtSummable T) :
     e.HilbertSchmidtSummable (c • T) := by
+    --Mathematical Proof: We have T is HS and thus ∑'i,⟪T eᵢ,T eᵢ⟫ exists finitely where is e is Hilbert Basis.
+    --Now for a complex number c ,  ∑'i,⟪c • T eᵢ, c •T eᵢ⟫ = sqr(mod(c))∑'i,⟪T eᵢ,T eᵢ⟫, which is again finite.
+    --Thus c• T is an HS.
+    unfold HilbertSchmidtSummable at *
     simp only [HilbertSchmidtSummable]
     simp only [LinearMap.smul_apply]
     simp only [LinearMap.smul_apply] 
@@ -44,7 +52,7 @@ lemma HilbertBasis.HilbertSchmidtSummable_smul (e : HilbertBasis I ℂ V) (c : �
     simp [ OrthogonalFamily.summable_of_lp]
     --simp [HilbertBasis.repr_self]
     -- HilbertBasis.summable_inner_mul_inner
-  sorry
+    sorry
 
 lemma HilbertBasis.HilbertSchmidtSummable' (e : HilbertBasis I ℂ V) (T : V →ₗ[ℂ] W)
   (h : e.HilbertSchmidtSummable T) (f : HilbertBasis I ℂ V) :
