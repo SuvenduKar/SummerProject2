@@ -1,5 +1,7 @@
 import Mathlib.Tactic.Basic
-import Mathlib.Tactic.LeftRight
+import Mathlib.Tactic.LibrarySearch
+--import Mathlib.Tactic.LeftRight
+
 
 lemma and_or_distrib_left (P Q R : Prop) : P ∧  (Q ∨ R ) ↔ (P ∧ Q) ∨ (P ∧ R) := by
   constructor
@@ -43,7 +45,22 @@ lemma and_or_distrib_left (P Q R : Prop) : P ∧  (Q ∨ R ) ↔ (P ∧ Q) ∨ (
         
 
 
+lemma equiv_neg_neg_self ( P: Prop) : ¬¬P ↔ P := by
 
+constructor
+intro h 
+· --change ¬ P → False at h
+  --change (P → False)→False at h
+  by_cases P
+  · exact h
+  · exfalso
+    contradiction 
+· intros g a 
+  contradiction 
+
+
+  
+  
     
 
 
