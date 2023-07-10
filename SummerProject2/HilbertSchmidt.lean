@@ -196,7 +196,7 @@ open ContinuousLinearMap (adjoint)
 
 
 /-HS summability is independent of Hilbert Basis-/
-lemma HilbertSchmidtSummable_key (e : HilbertBasis I ℝ V) (f : HilbertBasis J ℝ W) 
+lemma HilbertSchmidtSummable_Adjoint (e : HilbertBasis I ℝ V) (f : HilbertBasis J ℝ W) 
   (T : V →L[ℝ] W) (h : e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : 
     f.HilbertSchmidtSummable (adjoint T : W →ₗ[ℝ] V) := by
   unfold HilbertBasis.HilbertSchmidtSummable at *
@@ -256,13 +256,17 @@ lemma HilbertSchmidtSummable_key (e : HilbertBasis I ℝ V) (f : HilbertBasis J 
     simp
     exact sq ⟪ ( e i),(adjoint T) (f j) ⟫_ℝ 
   exact (HasSum.prod_fiberwise claim4 claim5).summable
+/-Hilber Schmidt summability of an operator is independent of Hilbert basis.-/
+theorem HilbertBasis.HilbertSchmidtSummable' (e : HilbertBasis I ℝ V) (T : V →L[ℝ] W)
+  (h : e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) (f : HilbertBasis I ℝ V)(g : HilbertBasis I ℝ W) :
+    f.HilbertSchmidtSummable (T : V →ₗ[ℝ] W) := by
+  have claim1: g.HilbertSchmidtSummable (adjoint T : W →ₗ[ℝ] V):= by 
 
-theorem HilbertBasis.HilbertSchmidtSummable' (e : HilbertBasis I ℝ V) (T : V →ₗ[ℝ] W)
-  (h : e.HilbertSchmidtSummable T) (f : HilbertBasis I ℝ V) :
-    f.HilbertSchmidtSummable T := by
+    exact HilbertSchmidtSummable_Adjoint e g T h
   
+  rw [Eq.symm (ContinuousLinearMap.adjoint_adjoint T)]
+  exact HilbertSchmidtSummable_Adjoint _ _ (adjoint T) claim1
   
-  sorry
 
 open LinearMap (range)
 open Filter
@@ -271,11 +275,35 @@ open Filter
 def IsFiniteRank (T : V →ₗ[ℝ] W) : Prop := FiniteDimensional ℝ (range T)
 
 /-Theorem: Every finite rank operator is compact-/
-theorem IsFiniteRank.IsCompactOperator (T : V →ₗ[ℝ] W) (H : IsFiniteRank T) : 
-    IsCompactOperator T := by
+theorem IsFiniteRank.IsCompactOperator (T : V →L[ℝ] W) (H : IsFiniteRank (T : V →ₗ[ℝ] W)) : 
+    IsCompactOperator (T : V →ₗ[ℝ] W) := by
+  haveI : FiniteDimensional ℝ (range T) := H
+  rw [isCompactOperator_iff_isCompact_closure_image_ball _ one_pos]
+  let S : Set W := (↑) '' (Metric.closedBall 0 ‖T‖ : Set (range T))
+  have obs: IsCompact S:= by 
+    apply IsCompact.image _ _
+    · exact ProperSpace.isCompact_closedBall _ _
+    · exact continuous_subtype_val
   
-  sorry
+  apply isCompact_of_isClosed_subset obs
+  · exact isClosed_closure
+    
+  · apply closure_minimal 
+    · intro x hx 
+      rcases hx with ⟨y, hy, hxy⟩
+      use ⟨T y, LinearMap.mem_range_self T y⟩
+      constructor
+      · rw [mem_closedBall_zero_iff]
+        rw [mem_ball_zero_iff] at hy
+        exact ContinuousLinearMap.unit_le_op_norm T y hy.le
+      · exact hxy
+    · exact IsCompact.isClosed obs
 
+/-Every finite rank operator is also a HilbertSchmidt operator-/
+theorem IsFiniteRank.IsHilbertSchmidtOperator (T : V →L[ℝ] W) (H : IsFiniteRank (T : V →ₗ[ℝ] W)) (e : HilbertBasis I ℝ V): 
+    e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W):= by
+
+  sorry
 /-Theorem: Every compact operator is a limit of a sequence of finite rank operators-/
 theorem IsCompactOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (H : IsCompactOperator T) : ∃ U : ℕ → V →L[ℝ] W,
     Tendsto U (AtTop) (nhds T) := 
