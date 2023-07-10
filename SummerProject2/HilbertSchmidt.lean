@@ -192,6 +192,9 @@ def HilbertSchmidt_SubSpace (e : HilbertBasis I ℝ V) : Submodule ℝ (V →ₗ
 
 open ContinuousLinearMap (adjoint)
 
+
+
+
 /-HS summability is independent of Hilbert Basis-/
 lemma HilbertSchmidtSummable_key (e : HilbertBasis I ℝ V) (f : HilbertBasis J ℝ W) 
   (T : V →L[ℝ] W) (h : e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : 
@@ -199,15 +202,65 @@ lemma HilbertSchmidtSummable_key (e : HilbertBasis I ℝ V) (f : HilbertBasis J 
   unfold HilbertBasis.HilbertSchmidtSummable at *
   rcases h with ⟨A, hA⟩
   have claim1 : ∀ i, HasSum (fun j ↦ ‖⟪f j, T (e i)⟫_ℝ‖^2) ⟪T (e i), T (e i)⟫_ℝ := by
-    sorry
+    intro i
+    have hf: ∀ i, 0≤ (fun j ↦ ‖⟪f j, T (e i)⟫_ℝ‖^2)  := by 
+      intro i j
+      apply sq_nonneg
+    convert f.hasSum_inner_mul_inner (T (e i)) (T (e i)) with j
+    simp only [real_inner_comm (f j) (T (e i))]
+    simp
+    exact sq ⟪ ( f j), T (e i)⟫_ℝ 
+
   have claim2 : HasSum (fun (ij : I × J) ↦ ‖⟪f ij.2, T (e ij.1)⟫_ℝ‖^2) A := by
-    sorry
-  sorry
+    have : Summable (fun (ij : I × J) ↦ ‖⟪f ij.2, T (e ij.1)⟫_ℝ‖^2) := by
+      convert claim1
+      constructor 
+      · intro h 
+        exact claim1
+        
+      · intro hy 
+        rw [summable_prod_of_nonneg]
+        constructor 
+        · intro i
+          exact HasSum.summable (claim1 i)
+          
+        · simp_rw [(claim1 _).tsum_eq]
+          exact HasSum.summable hA
+        · intro (i, j)
+          apply sq_nonneg
+          
+          
+
+    rcases this with ⟨B, hB⟩
+    convert hB
+    apply HasSum.unique hA
+    apply HasSum.prod_fiberwise hB
+    exact claim1
+  --have claim3 : ∀ i, HasSum (fun j ↦ ‖⟪(e i), (adjoint T) (f j)⟫_ℝ‖^2) ⟪T (e i), T (e i)⟫_ℝ := by
+    --intro i 
+    --simp_rw [ContinuousLinearMap.adjoint_inner_right T ( e _) ( f _)]
+    --simp_rw [Eq.symm (norm_inner_symm ( f _) (T ( e i))) ]
+    --convert f.hasSum_inner_mul_inner (T (e i)) (T (e i)) with j
+    --simp only [real_inner_comm (f j) (T (e i))]
+    --simp
+    --exact sq ⟪ ( f j), T (e i)⟫_ℝ 
+  have claim4 : HasSum (fun (ji : J × I) ↦ ‖⟪ (e ji.2),(adjoint T) (f ji.1)⟫_ℝ‖^2) A := by
+    simp_rw [ContinuousLinearMap.adjoint_inner_right T ( e _) ( f _)]
+    simp_rw [Eq.symm (norm_inner_symm ( f _) (T ( e _))) ]
+    rw [← (Equiv.prodComm _ _).hasSum_iff]
+    exact claim2
+  have claim5 : ∀ j, HasSum (fun i ↦ ‖⟪e i, (adjoint T) (f j)⟫_ℝ‖^2) ⟪(adjoint T) ( f j), (adjoint T) ( f j)⟫_ℝ := by
+    intro j
+    convert e.hasSum_inner_mul_inner ((adjoint T) (f j)) ((adjoint T) (f j)) with i
+    simp only [real_inner_comm (e i) ((adjoint T) (f j))]
+    simp
+    exact sq ⟪ ( e i),(adjoint T) (f j) ⟫_ℝ 
+  exact (HasSum.prod_fiberwise claim4 claim5).summable
 
 theorem HilbertBasis.HilbertSchmidtSummable' (e : HilbertBasis I ℝ V) (T : V →ₗ[ℝ] W)
   (h : e.HilbertSchmidtSummable T) (f : HilbertBasis I ℝ V) :
     f.HilbertSchmidtSummable T := by
-
+  
   
   sorry
 
@@ -228,6 +281,7 @@ theorem IsCompactOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (H : IsCompactOpe
     Tendsto U (AtTop) (nhds T) := 
   
   sorry
+
 
 end hilbert_schmidt -- section
 --Radhe Radhe
