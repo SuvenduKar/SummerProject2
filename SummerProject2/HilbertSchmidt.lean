@@ -304,9 +304,19 @@ theorem IsFiniteRank.IsHilbertSchmidtOperator (T : V →L[ℝ] W) (H : IsFiniteR
     e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W):= by
 
   sorry
+/-Every HilbertSchmidt Operator is compact operator-/
+theorem IsHilbertSchmidtOperator.IsCompactOperator (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h:e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)): 
+    IsCompactOperator (T : V →ₗ[ℝ] W):= by
+
+  sorry
 /-Theorem: Every compact operator is a limit of a sequence of finite rank operators-/
 theorem IsCompactOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (H : IsCompactOperator T) : ∃ U : ℕ → V →L[ℝ] W,
-    Tendsto U (AtTop) (nhds T) := 
+    Tendsto U (AtTop) (nhds T) := by
+  
+  sorry
+/-Finite rank operators are dense in the space of Hilbert Schmidt operator-/
+theorem IsHilbertSchmidtOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h: e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : ∃ U : ℕ → V →L[ℝ] W,
+    Tendsto U (AtTop) (nhds T) :=by 
   
   sorry
 
