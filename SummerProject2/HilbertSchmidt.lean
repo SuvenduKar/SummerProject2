@@ -274,6 +274,12 @@ open Filter
 /-Definition of finite rank operator-/
 def IsFiniteRank (T : V →ₗ[ℝ] W) : Prop := FiniteDimensional ℝ (range T)
 
+open BigOperators
+
+theorem foo (s : Finset I) (T : I → V →ₗ[ℝ] W) (h : ∀ i, IsFiniteRank (T i)) :
+    IsFiniteRank (∑ i in s, T i) := by
+  sorry
+
 /-Theorem: Every finite rank operator is compact-/
 theorem IsFiniteRank.IsCompactOperator (T : V →L[ℝ] W) (H : IsFiniteRank (T : V →ₗ[ℝ] W)) : 
     IsCompactOperator (T : V →ₗ[ℝ] W) := by
@@ -314,6 +320,29 @@ theorem IsCompactOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (H : IsCompactOpe
     Tendsto U (AtTop) (nhds T) := by
   
   sorry
+
+
+/-Finite rank operators are dense in the space of Hilbert Schmidt operator-/
+theorem IsHilbertSchmidtOperator_lim_IsFiniteRank_HSNorm (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h: e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : 
+    ∃ U : (Finset I) → V →L[ℝ] W, (∀ n, IsFiniteRank (U n : V →ₗ[ℝ] W)) ∧ Tendsto (fun n ↦ e.HilbertSchmidtNormSq (T - U n : V →ₗ[ℝ] W)) (atTop) (nhds 0) := by 
+  let U := fun s ↦ ∑ i in s, (innerSL ℝ (e i)).smulRight (T (e i))
+  have U_def : ∀ s x, U s x = ∑ k in s, ⟪e k, x⟫_ℝ • (T (e k)) := by
+    intro s x
+    exact ContinuousLinearMap.sum_apply _ _ _
+  use U
+  constructor 
+  · intro n 
+
+    sorry 
+  · convert tendsto_tsum_compl_atTop_zero (fun i ↦ ⟪T (e i), T (e i)⟫_ℝ) with s
+    unfold HilbertBasis.HilbertSchmidtNormSq
+    change (∑' i, _) = ∑' i : (sᶜ : Set I), _
+    rw [tsum_subtype (sᶜ : Set I) (fun i : I ↦ ⟪T (e i), T (e i)⟫_ℝ)]
+    congr
+    ext i
+    sorry
+  sorry
+
 /-Finite rank operators are dense in the space of Hilbert Schmidt operator-/
 theorem IsHilbertSchmidtOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h: e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : ∃ U : ℕ → V →L[ℝ] W,
     Tendsto U (AtTop) (nhds T) :=by 
