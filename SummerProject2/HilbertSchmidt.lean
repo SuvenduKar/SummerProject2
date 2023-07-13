@@ -336,48 +336,99 @@ theorem IsCompactOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (H : IsCompactOpe
   sorry
 
 
+section FinalTheorem
+
+variable (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h : e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W))
+
+noncomputable def U : (Finset I) → V →L[ℝ] W :=
+  fun s ↦ ∑ i in s, (innerSL ℝ (e i)).smulRight (T (e i))
+
+lemma U_def (s : Finset I) (x : V) : U T e s x = ∑ k in s, ⟪e k, x⟫_ℝ • (T (e k)) := by
+  exact ContinuousLinearMap.sum_apply _ _ _
+
+lemma U_isFiniteRank (s : Finset I) : IsFiniteRank (U T e s : V →ₗ[ℝ] W) := by
+  convert IsFiniteRank_Sum_of_FiniteRank s
+    (fun i ↦ ((innerSL ℝ (e i)).smulRight (T (e i)) : V →ₗ[ℝ] W)) _
+  · ext x
+    norm_cast
+  · intro i
+    unfold IsFiniteRank
+    have : FiniteDimensional ℝ (Submodule.span ℝ {T (e i)}) := by
+      infer_instance
+    have : range ((innerSL ℝ (e i)).smulRight (T (e i)) : V →ₗ[ℝ] W) ≤ Submodule.span ℝ {T (e i)} := by
+      intro x hx
+      rw [LinearMap.mem_range] at hx
+      cases' hx with y hy
+      rw [← hy]
+      change ⟪e i, y⟫_ℝ • T (e i) ∈ Submodule.span ℝ {T (e i)}
+      apply Submodule.smul_mem
+      exact Submodule.mem_span_singleton_self _
+    apply Submodule.finiteDimensional_of_le this
+  
+lemma U_of_not_mem (s : Finset I) (i : I) (hi : i ∉ s) :  U T e s (e i) = 0 := by
+  rw [U_def]
+  apply Finset.sum_eq_zero
+  intro k hk 
+  have := HilbertBasis.orthonormal e
+  rw [this.2]
+  · exact zero_smul _ _
+  · intro hki
+    rw [hki] at hk
+    contradiction
+
+lemma U_of_mem (s : Finset I) (i : I) (hi : i ∈ s) :  U T e s (e i) = T (e i) := by
+  classical
+  rw [U_def]
+  have ortho := HilbertBasis.orthonormal e 
+  have : T (e i) = ⟪e i, e i⟫_ℝ • T (e i) := by
+    rw [orthonormal_iff_ite] at ortho
+    rw [ortho, if_pos (rfl : i = i), one_smul]
+  rw [this]
+  apply Finset.sum_eq_single
+  · intro k hk hki
+    rw [ortho.2 hki]
+    exact zero_smul _ _
+  · intro hi
+    contradiction
+
+lemma U_tendsto : Tendsto (fun s ↦ e.HilbertSchmidtNormSq (T - U T e s : V →ₗ[ℝ] W)) (atTop) (nhds 0) := by
+  classical
+  convert tendsto_tsum_compl_atTop_zero (fun i ↦ ⟪T (e i), T (e i)⟫_ℝ) with s
+  unfold HilbertBasis.HilbertSchmidtNormSq
+  change (∑' i, _) = ∑' i : (sᶜ : Set I), _
+  rw [tsum_subtype (sᶜ : Set I) (fun i : I ↦ ⟪T (e i), T (e i)⟫_ℝ)]
+  congr
+  ext i
+  rw [Set.indicator_apply]
+  split_ifs with hi
+  · rw [LinearMap.sub_apply]
+    norm_cast
+    rw [U_of_not_mem T e s i hi, sub_zero]
+  · rw [LinearMap.sub_apply]
+    norm_cast
+    rw [U_of_mem T e s i (of_not_not hi), sub_self, inner_zero_left]
+
+
 /-Finite rank operators are dense in the space of Hilbert Schmidt operator-/
 theorem IsHilbertSchmidtOperator_lim_IsFiniteRank_HSNorm (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h: e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : 
     ∃ U : (Finset I) → V →L[ℝ] W, (∀ n, IsFiniteRank (U n : V →ₗ[ℝ] W)) ∧ Tendsto (fun n ↦ e.HilbertSchmidtNormSq (T - U n : V →ₗ[ℝ] W)) (atTop) (nhds 0) := by 
   classical
-  let U := fun s ↦ ∑ i in s, (innerSL ℝ (e i)).smulRight (T (e i))
-  have U_def : ∀ s x, U s x = ∑ k in s, ⟪e k, x⟫_ℝ • (T (e k)) := by
-    intro s x
-    exact ContinuousLinearMap.sum_apply _ _ _
-  use U
-  constructor 
-  · intro s
-    convert IsFiniteRank_Sum_of_FiniteRank s
-      (fun i ↦ ((innerSL ℝ (e i)).smulRight (T (e i)) : V →ₗ[ℝ] W)) _
-    · ext x
-      norm_cast
-      exact U_def s x 
-      sorry
-    · sorry 
-  · convert tendsto_tsum_compl_atTop_zero (fun i ↦ ⟪T (e i), T (e i)⟫_ℝ) with s
-    unfold HilbertBasis.HilbertSchmidtNormSq
-    change (∑' i, _) = ∑' i : (sᶜ : Set I), _
-    rw [tsum_subtype (sᶜ : Set I) (fun i : I ↦ ⟪T (e i), T (e i)⟫_ℝ)]
-    congr
-    ext i
-    rw [Set.indicator_apply]
-    split_ifs with hi
-    · have : U s (e i) = 0 := by
-        rw [U_def]
-        apply Finset.sum_eq_zero
-        intro k hk 
-        have := HilbertBasis.orthonormal e
-        rw [this.2]
-        · exact zero_smul _ _
-        · intro hki
-          rw [hki] at hk
-          contradiction
-      rw [LinearMap.sub_apply]
-      norm_cast
-      rw [this, sub_zero]
-    · have : U s (e i) = T (e i) := by
-        sorry
-      sorry
+  use U T e
+  constructor
+  · exact U_isFiniteRank T e
+  · exact U_tendsto T e
+
+end FinalTheorem
+
+noncomputable def HilbertBasis.HilbertSchmidtNorm (e : HilbertBasis I ℝ V) : Seminorm ℝ (HilbertSchmidt_SubSpace e : Submodule ℝ (V →ₗ[ℝ] W)) where
+  toFun f := Real.sqrt (e.HilbertSchmidtNormSq (f : V →ₗ[ℝ] W))
+  map_zero' := sorry
+  add_le' := sorry
+  neg' := sorry
+  smul' := sorry
+
+noncomputable instance (e : HilbertBasis I ℝ V) : SeminormedAddCommGroup (HilbertSchmidt_SubSpace e : Submodule ℝ (V →ₗ[ℝ] W)) :=
+  e.HilbertSchmidtNorm.toSeminormedAddCommGroup
 
 /-Finite rank operators are dense in the space of Hilbert Schmidt operator-/
 theorem IsHilbertSchmidtOperator_lim_IsFiniteRank (T : V →L[ℝ] W) (e : HilbertBasis I ℝ V) (h: e.HilbertSchmidtSummable (T : V →ₗ[ℝ] W)) : ∃ U : ℕ → V →L[ℝ] W,
