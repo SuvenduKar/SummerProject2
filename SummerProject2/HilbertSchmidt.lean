@@ -420,12 +420,26 @@ theorem IsHilbertSchmidtOperator_lim_IsFiniteRank_HSNorm (T : V →L[ℝ] W) (e 
 
 end FinalTheorem
 
+
+
+
 noncomputable def HilbertBasis.HilbertSchmidtNorm (e : HilbertBasis I ℝ V) : Seminorm ℝ (HilbertSchmidt_SubSpace e : Submodule ℝ (V →ₗ[ℝ] W)) where
   toFun f := Real.sqrt (e.HilbertSchmidtNormSq (f : V →ₗ[ℝ] W))
-  map_zero' := sorry
-  add_le' := sorry
-  neg' := sorry
-  smul' := sorry
+  map_zero' := by 
+    unfold HilbertSchmidtNormSq 
+    simp only [map_zero] 
+    simp 
+  add_le' := by 
+    
+    sorry
+  neg' := by 
+    sorry
+  smul' := by
+    unfold HilbertSchmidtNormSq 
+    intro a 
+    intro x 
+     
+    sorry
 
 noncomputable instance (e : HilbertBasis I ℝ V) : SeminormedAddCommGroup (HilbertSchmidt_SubSpace e : Submodule ℝ (V →ₗ[ℝ] W)) :=
   e.HilbertSchmidtNorm.toSeminormedAddCommGroup
