@@ -11,7 +11,7 @@ variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 #check OrthonormalBasis
 #check HilbertBasis
 #check LinearMap
-
+/-WARNING:This Whole Document is Only for The Operators for which T = | T | , holds -/
 /-- The trace of a linear map with respect to a given `HilbertBasis`.-/
 noncomputable def HilbertBasis.trace (e : HilbertBasis I ℂ V) (T : V →ₗ[ℂ] V) : ℂ :=
   ∑' i, ⟪e i, T (e i)⟫_ℂ 
