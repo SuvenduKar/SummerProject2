@@ -430,9 +430,25 @@ noncomputable def HilbertBasis.HilbertSchmidtNorm (e : HilbertBasis I ℝ V) : S
     simp only [map_zero] 
     simp 
   add_le' := by 
+    unfold HilbertSchmidtNormSq
+    intro f g
+    simp only [add_le_add_iff_left]
+    simp only [← Real.sqrt_mul_self_eq_abs]
+    simp only [Real.sqrt_mul_self_eq_abs]
+    refine Covby.le ?h
     
+
+
     sorry
   neg' := by 
+    unfold HilbertSchmidtNormSq
+    intro f
+    simp only [← Real.sqrt_mul_self_eq_abs]
+    simp only [Real.sqrt_mul_self_eq_abs]
+    refine Covby.le ?h
+    
+
+
     sorry
   smul' := by
     unfold HilbertSchmidtNormSq 
