@@ -1,7 +1,5 @@
 import Mathlib.Tactic.Basic
 import Mathlib.Tactic.LibrarySearch
---import Mathlib.Tactic.LeftRight
-
 
 lemma and_or_distrib_left (P Q R : Prop) : P ∧  (Q ∨ R ) ↔ (P ∧ Q) ∨ (P ∧ R) := by
   constructor
